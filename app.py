@@ -1,4 +1,5 @@
 import os
+import time
 from pathlib import Path
 import streamlit as st
 from dotenv import load_dotenv
@@ -16,7 +17,6 @@ def rag_tool(query: str):
     """
     retriever = get_retriever()
     docs = retriever.invoke(query)
-    print(docs)
 
     return "\n\n".join([doc.page_content for doc in docs])
 
@@ -74,7 +74,7 @@ def render_sidebar():
         if st.button("대화 초기화", use_container_width=True):
             st.session_state.messages = []
             st.rerun()
-
+            
 # 채팅 내역
 def render_chat():
     st.title("NPS X RAG")
@@ -92,11 +92,8 @@ def render_chat():
     
     st.session_state.messages.append({"role": "user", "content": query})
     history = st.session_state.messages.copy()
-    history.append({"role": "user", "content": query})
-
     response = agent.invoke({"messages": history})
     answer = response['messages'][-1].content
-
     st.session_state.messages.append({"role": "assistant", "content": answer})
     st.rerun()
     
@@ -110,7 +107,7 @@ def render_chat():
 #    st.rerun()
 
 
-st.set_page_config(page_title="기초 챗봇 UI", layout="wide")
+st.set_page_config(page_title="NPS X RAG 챗봇", layout="wide")
 
 if "messages" not in st.session_state:
     st.session_state.messages = []
