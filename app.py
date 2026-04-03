@@ -89,14 +89,25 @@ def render_chat():
 #    response = llm.invoke(query)
 #    answer = response.content   
     agent = get_agent()
-    response = agent.invoke(
-        {"messages"	:	[{"role":	"user",	"content":	query}]}
-    )
-    answer	=	response['messages'][-1].content
     
     st.session_state.messages.append({"role": "user", "content": query})
+    history = st.session_state.messages.copy()
+    history.append({"role": "user", "content": query})
+
+    response = agent.invoke({"messages": history})
+    answer = response['messages'][-1].content
+
     st.session_state.messages.append({"role": "assistant", "content": answer})
     st.rerun()
+    
+#    response = agent.invoke(
+#        {"messages"	:	[{"role":	"user",	"content":	query}]}
+#    )
+#    answer	=	response['messages'][-1].content
+    
+#    st.session_state.messages.append({"role": "user", "content": query})
+#    st.session_state.messages.append({"role": "assistant", "content": answer})
+#    st.rerun()
 
 
 st.set_page_config(page_title="기초 챗봇 UI", layout="wide")
